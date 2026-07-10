@@ -86,15 +86,15 @@ fn render_listing(holder: &InfoHolder) -> maud::Markup {
         (DOCTYPE)
         html {
             head {
-                meta charset="utf-8"
-                title { "MLP games archive file list" }
+                meta charset="utf-8";
+                title { "MLP games archive file list" };
             }
             body {
-                h1 { "MLP games archive file list" }
+                h1 { "MLP games archive file list" };
                 ul {
                     @for entry in holder.map.iter() {
                         li {
-                            a href=(format!("./{}", entry.0)) { (entry.0) } " (" (entry.1.file_name) ")"
+                            a href=(format!("./{}", entry.0)) { (entry.0) } " (" (entry.1.file_name) ")";
                         }
                     }
                 }

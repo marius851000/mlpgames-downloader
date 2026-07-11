@@ -39,6 +39,8 @@ class StateManager:
 
     def download_entry(self, id: int):
         entry = self.get_entry_by_id(id)
+        if entry["files"][0]["path"].endswith(".uploading.tmp"):
+            print("skipping " + str(id) + " as it is still uploading")
         if os.path.exists(self.config.get_meta_path(id)):
 
             with open(self.config.get_meta_path(id)) as f:

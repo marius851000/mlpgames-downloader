@@ -40,10 +40,18 @@ class StateManager:
     def download_entry(self, id: int):
         entry = self.get_entry_by_id(id)
         if os.path.exists(self.config.get_meta_path(id)):
-            print(self.config.get_file_path(id) + " already downloaded")
-            return
-        else:
-            print("downloading " + self.config.get_file_path(id) + " (" + entry["primary_file"] + ")")
+
+            with open(self.config.get_meta_path(id)) as f:
+                on_disk_meta = json.load(f)
+            server_info = entry["files"][0]
+            if on_disk_meta["modified"] == server_info["modified"] and on_disk_meta["path"] == server_info["path"] and on_disk_meta["size"] == server_info["size"]:
+                return
+            else:
+                print("local and online meta differs, re-downloading")
+                print(on_disk_meta)
+                print(server_info)
+
+        print("downloading " + self.config.get_file_path(id) + " (" + entry["primary_file"] + ")")
 
         source_url = self.config.get_source_url(id)
         out_path = self.config.get_file_path(id)

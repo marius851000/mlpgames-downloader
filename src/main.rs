@@ -1,7 +1,8 @@
 use actix_files::NamedFile;
 use actix_web::{
-    App, Either, HttpResponseBuilder, HttpServer, Responder, get,
+    App, Either, HttpResponseBuilder, HttpServer, Responder,
     http::{StatusCode, header::ContentDisposition},
+    route,
     web::{self, Data},
 };
 use anyhow::Context;
@@ -103,12 +104,12 @@ fn render_listing(holder: &InfoHolder) -> maud::Markup {
     }
 }
 
-#[get("/")]
+#[route("/", method = "GET", method = "HEAD")]
 async fn index(info: Data<Arc<AtomicSwap<Arc<InfoHolder>>>>) -> impl Responder {
     render_listing(&info.clone_inner())
 }
 
-#[get("/{id}")]
+#[route("/{id}", method = "GET", method = "HEAD")]
 async fn hello(
     path: web::Path<String>,
     info: Data<Arc<AtomicSwap<Arc<InfoHolder>>>>,

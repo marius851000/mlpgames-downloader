@@ -59,6 +59,9 @@ class StateManager:
         tmp_path = os.path.join(self.config.get_tmp_folder(), str(id))
 
         subprocess.check_call(["wget", source_url, "-O", tmp_path])
+        downloaded_file_size = os.path.getsize(tmp_path)
+        if downloaded_file_size != entry["files"][0]["size"]:
+            raise BaseException("Downloaded files does not have the expected size " + str(entry["files"][0]["size"]))
         os.rename(tmp_path, out_path)
 
         assert len(entry["files"]) == 1

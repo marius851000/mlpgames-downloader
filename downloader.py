@@ -1,7 +1,6 @@
 from typing import Dict, Any
 import os
 import requests
-import subprocess
 import json
 import argparse
 
@@ -60,7 +59,13 @@ class StateManager:
 
         tmp_path = os.path.join(self.config.get_tmp_folder(), str(id))
 
-        subprocess.check_call(["wget", source_url, "-O", tmp_path])
+        with requests.get(source_url, stream=True) as r:
+            r.raise_for_status()
+            with open(tmp_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=256 * 1024):
+                    if chunk:
+                        f.write(chunk)
+        
         downloaded_file_size = os.path.getsize(tmp_path)
         if downloaded_file_size != entry["files"][0]["size"]:
             raise BaseException("Downloaded files does not have the expected size " + str(entry["files"][0]["size"]))
